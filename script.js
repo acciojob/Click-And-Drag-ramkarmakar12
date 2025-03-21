@@ -1,49 +1,43 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const container = document.querySelector(".container");
-  const cubes = document.querySelectorAll(".cube");
+// Your code here.
+const items = document.querySelectorAll('.item');
+let selectedItem = null;
+let offsetX = 0;
+let offsetY = 0;
+
+items.forEach(item => {
+  item.addEventListener('mousedown', (event) => {
+    selectedItem = item;
+    offsetX = event.clientX - item.getBoundingClientRect().left;
+    offsetY = event.clientY - item.getBoundingClientRect().top;
+    
+    // Add mousemove and mouseup event listeners to the document
+    document.addEventListener('mousemove', dragItem);
+    document.addEventListener('mouseup', dropItem);
+  });
+});
+
+function dragItem(event) {
+  if (!selectedItem) return;
+
+  // Calculate the new position of the item
+  const containerRect = document.querySelector('.items').getBoundingClientRect();
   
-  let selectedCube = null;
-  let offsetX = 0, offsetY = 0;
+  let newLeft = event.clientX - offsetX;
+  let newTop = event.clientY - offsetY;
 
-  // Optional: Position cubes in a grid initially
-  cubes.forEach((cube, index) => {
-    const cols = 4; // Adjust this based on the grid configuration
-    const gap = 10;
-    const cubeWidth = 100;
-    const cubeHeight = 100;
-    const col = index % cols;
-    const row = Math.floor(index / cols);
-    const x = col * (cubeWidth + gap) + 10; // starting offset same as container padding
-    const y = row * (cubeHeight + gap) + 10;
-    cube.style.left = `${x}px`;
-    cube.style.top = `${y}px`;
-  });
+  // Constrain the item within the container's bounds
+  newLeft = Math.max(containerRect.left, Math.min(newLeft, containerRect.right - selectedItem.offsetWidth));
+  newTop = Math.max(containerRect.top, Math.min(newTop, containerRect.bottom - selectedItem.offsetHeight));
+  
+  // Apply the new position
+  selectedItem.style.position = 'absolute';
+  selectedItem.style.left = `${newLeft - containerRect.left}px`;
+  selectedItem.style.top = `${newTop - containerRect.top}px`;
+}
 
-  // Mousedown: When a cube is clicked, set it as selected and record offsets.
-  cubes.forEach(cube => {
-    cube.addEventListener("mousedown", (e) => {
-      selectedCube = cube;
-      selectedCube.classList.add("dragging");
-      const rect = selectedCube.getBoundingClientRect();
-      offsetX = e.clientX - rect.left;
-      offsetY = e.clientY - rect.top;
-    });
-  });
-
-  // Mousemove: If a cube is selected, update its position based on the mouse.
-  document.addEventListener("mousemove", (e) => {
-    if (selectedCube) {
-      // Calculate new position relative to the container.
-      let newX = e.clientX - offsetX - container.getBoundingClientRect().left;
-      let newY = e.clientY - offsetY - container.getBoundingClientRect().top;
-      
-      // Determine boundaries
-      const maxX = container.clientWidth - selectedCube.offsetWidth;
-      const maxY = container.clientHeight - selectedCube.offsetHeight;
-      
-      // Clamp the new position within the container boundaries.
-      newX = Math.max(0, Math.min(newX, maxX));
-      newY = Math.max(0, Math.min(newY, maxY));
-      
-      selectedCube.style.left = newX + "px";
-      selectedCube.sty
+function dropItem() {
+  // Remove the event listeners after the mouse is released
+  document.removeEventListener('mousemove', dragItem);
+  document.removeEventListener('mouseup', dropItem);
+  selectedItem = null;
+}
