@@ -3,62 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Click and Drag</title>
+    <title>Draggable Cubes</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <div class="cube">01</div>
-        <div class="cube">02</div>
-        <div class="cube">03</div>
-        <div class="cube">04</div>
-        <div class="cube">05</div>
+        <div class="cube"></div>
+        <div class="cube"></div>
+        <div class="cube"></div>
+        <div class="cube"></div>
+        <!-- Add more cubes as needed -->
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const container = document.querySelector(".container");
-            let selectedCube = null;
-            let offsetX = 0, offsetY = 0;
-
-            document.querySelectorAll(".cube").forEach(cube => {
-                cube.addEventListener("mousedown", function (e) {
-                    selectedCube = this;
-                    const rect = selectedCube.getBoundingClientRect();
-                    offsetX = e.clientX - rect.left;
-                    offsetY = e.clientY - rect.top;
-
-                    selectedCube.style.cursor = "grabbing";
-                    selectedCube.style.zIndex = "1000"; // Bring it to front
-                });
-            });
-
-            document.addEventListener("mousemove", function (e) {
-                if (selectedCube) {
-                    let newX = e.clientX - offsetX - container.offsetLeft;
-                    let newY = e.clientY - offsetY - container.offsetTop;
-
-                    let maxX = container.offsetWidth - selectedCube.offsetWidth;
-                    let maxY = container.offsetHeight - selectedCube.offsetHeight;
-
-                    newX = Math.max(0, Math.min(newX, maxX));
-                    newY = Math.max(0, Math.min(newY, maxY));
-
-                    selectedCube.style.left = newX + "px";
-                    selectedCube.style.top = newY + "px";
-                }
-            });
-
-            document.addEventListener("mouseup", function () {
-                if (selectedCube) {
-                    selectedCube.style.cursor = "grab";
-                    selectedCube.style.zIndex = "1";
-                    selectedCube = null;
-                }
-            });
-        });
-    </script>
-
-    
+    <script src="script.js"></script>
 </body>
 </html>
