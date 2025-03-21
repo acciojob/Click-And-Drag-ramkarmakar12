@@ -1,42 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Click and Drag</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click and Drag</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="items">
-    <div class="item item1">01</div>
-    <div class="item item2">02</div>
-    <div class="item item3">03</div>
-    <div class="item item4">04</div>
-    <div class="item item5">05</div>
-    <div class="item item6">06</div>
-    <div class="item item7">07</div>
-    <div class="item item8">08</div>
-    <div class="item item9">09</div>
-    <div class="item item10">10</div>
-    <div class="item item11">11</div>
-    <div class="item item12">12</div>
-    <div class="item item13">13</div>
-    <div class="item item14">14</div>
-    <div class="item item15">15</div>
-    <div class="item item16">16</div>
-    <div class="item item17">17</div>
-    <div class="item item18">18</div>
-    <div class="item item19">19</div>
-    <div class="item item20">20</div>
-    <div class="item item21">21</div>
-    <div class="item item22">22</div>
-    <div class="item item23">23</div>
-    <div class="item item24">24</div>
-    <div class="item item25">25</div>
-  </div>
+    <div class="container">
+        <div class="cube">01</div>
+        <div class="cube">02</div>
+        <div class="cube">03</div>
+        <div class="cube">04</div>
+        <div class="cube">05</div>
+    </div>
 
-<script>
-//Your code goes here 
-</script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const container = document.querySelector(".container");
+            let selectedCube = null;
+            let offsetX = 0, offsetY = 0;
 
-  </body>
+            document.querySelectorAll(".cube").forEach(cube => {
+                cube.addEventListener("mousedown", function (e) {
+                    selectedCube = this;
+                    const rect = selectedCube.getBoundingClientRect();
+                    offsetX = e.clientX - rect.left;
+                    offsetY = e.clientY - rect.top;
+
+                    selectedCube.style.cursor = "grabbing";
+                    selectedCube.style.zIndex = "1000"; // Bring it to front
+                });
+            });
+
+            document.addEventListener("mousemove", function (e) {
+                if (selectedCube) {
+                    let newX = e.clientX - offsetX - container.offsetLeft;
+                    let newY = e.clientY - offsetY - container.offsetTop;
+
+                    let maxX = container.offsetWidth - selectedCube.offsetWidth;
+                    let maxY = container.offsetHeight - selectedCube.offsetHeight;
+
+                    newX = Math.max(0, Math.min(newX, maxX));
+                    newY = Math.max(0, Math.min(newY, maxY));
+
+                    selectedCube.style.left = newX + "px";
+                    selectedCube.style.top = newY + "px";
+                }
+            });
+
+            document.addEventListener("mouseup", function () {
+                if (selectedCube) {
+                    selectedCube.style.cursor = "grab";
+                    selectedCube.style.zIndex = "1";
+                    selectedCube = null;
+                }
+            });
+        });
+    </script>
+
+    
+</body>
 </html>
