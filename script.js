@@ -1,43 +1,51 @@
-// Your code here.
-const items = document.querySelectorAll('.item');
-let selectedItem = null;
-let offsetX = 0;
-let offsetY = 0;
+// script.js
+document.addEventListener('DOMContentLoaded', function() {
+    const cubes = document.querySelectorAll('.cube');
+    const container = document.querySelector('.container');
+    let selectedCube = null;
+    let offset = [0, 0];
 
-items.forEach(item => {
-  item.addEventListener('mousedown', (event) => {
-    selectedItem = item;
-    offsetX = event.clientX - item.getBoundingClientRect().left;
-    offsetY = event.clientY - item.getBoundingClientRect().top;
-    
-    // Add mousemove and mouseup event listeners to the document
-    document.addEventListener('mousemove', dragItem);
-    document.addEventListener('mouseup', dropItem);
-  });
+    // Function to handle mousedown event
+    function handleMouseDown(e) {
+        if (e.target.classList.contains('cube')) {
+            selectedCube = e.target;
+            offset = [
+                selectedCube.offsetLeft - e.clientX,
+                selectedCube.offsetTop - e.clientY
+            ];
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+        }
+    }
+
+    // Function to handle mousemove event
+    function handleMouseMove(e) {
+        if (selectedCube) {
+            let x = e.clientX + offset[0];
+            let y = e.clientY + offset[1];
+
+            // Boundary checking to keep cube within container
+            if (x < 0) x = 0;
+            if (y < 0) y = 0;
+            if (x + selectedCube.offsetWidth > container.offsetWidth) x = container.offsetWidth - selectedCube.offsetWidth;
+            if (y + selectedCube.offsetHeight > container.offsetHeight) y = container.offsetHeight - selectedCube.offsetHeight;
+
+            selectedCube.style.position = 'absolute';
+            selectedCube.style.left = `${x}px`;
+            selectedCube.style.top = `${y}px`;
+        }
+    }
+
+    // Function to handle mouseup event
+    function handleMouseUp() {
+        selectedCube = null;
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+    }
+
+    // Add event listener for mousedown on the container
+    container.addEventListener('mousedown', handleMouseDown);
 });
 
-function dragItem(event) {
-  if (!selectedItem) return;
 
-  // Calculate the new position of the item
-  const containerRect = document.querySelector('.items').getBoundingClientRect();
-  
-  let newLeft = event.clientX - offsetX;
-  let newTop = event.clientY - offsetY;
 
-  // Constrain the item within the container's bounds
-  newLeft = Math.max(containerRect.left, Math.min(newLeft, containerRect.right - selectedItem.offsetWidth));
-  newTop = Math.max(containerRect.top, Math.min(newTop, containerRect.bottom - selectedItem.offsetHeight));
-  
-  // Apply the new position
-  selectedItem.style.position = 'absolute';
-  selectedItem.style.left = `${newLeft - containerRect.left}px`;
-  selectedItem.style.top = `${newTop - containerRect.top}px`;
-}
-
-function dropItem() {
-  // Remove the event listeners after the mouse is released
-  document.removeEventListener('mousemove', dragItem);
-  document.removeEventListener('mouseup', dropItem);
-  selectedItem = null;
-}
