@@ -1,25 +1,37 @@
-/* style.css */
-body {
-    font-family: Arial, sans-serif;
-}
-
+/* Container where cubes can be moved */
 .container {
-    width: 400px; /* Define the width of the container */
-    height: 400px; /* Define the height of the container */
-    border: 1px solid #ccc; /* Visual boundary for the container */
-    position: relative; /* For positioning cubes absolutely */
-    display: grid; /* For grid layout */
-    grid-template-columns: repeat(2, 1fr); /* Example grid layout for 2 columns */
-    gap: 10px; /* Gap between cubes */
+  position: relative;
+  width: 80%;
+  max-width: 800px;
+  height: 500px;
+  margin: 40px auto;
+  border: 2px solid #333;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
+/* Cube styling */
 .cube {
-    width: 100px; /* Cube size */
-    height: 100px; /* Cube size */
-    background-color: #007bff; /* Cube color */
-    cursor: grab; /* Change cursor on hover */
+  background-color: #4CAF50;
+  color: white;
+  font-size: 1.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  position: absolute;  /* Allow free positioning */
+  width: 100px;
+  height: 100px;
+  cursor: grab;
+  border-radius: 8px;
 }
 
-.cube:active {
-    cursor: grabbing; /* Change cursor while dragging */
+/* Optional: style for when a cube is actively being dragged */
+.cube.dragging {
+  cursor: grabbing;
+  opacity: 0.8;
+  z-index: 1000;
 }
